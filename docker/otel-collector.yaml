@@ -1,0 +1,50 @@
+# OTel Collector config for the CAP telemetry course.
+#
+# Shape of every Collector config: receivers -> processors -> exporters,
+# wired together into pipelines, one per signal.
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+processors:
+  # Buffers spans/metrics and ships them in groups. Always use this in
+  # production; without it every span is its own network call.
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+exporters:
+  # Traces -> Jaeger. Container-to-container, so the hostname is the
+  # service name from docker-compose, not localhost.
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  # Metrics -> a /metrics page that Prometheus scrapes.
+  # OTLP is push; Prometheus is pull. This exporter is the adapter between them.
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    # Keeps resource attributes (service.name, deployment.environment, ...)
+    # as labels on the metrics instead of dropping them.
+    resource_to_telemetry_conversion:
+      enabled: true
+  # Prints everything to the Collector's own logs. Priceless when you are
+  # asking "is my app actually sending anything?"
+  debug:
+    verbosity: basic
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/jaeger, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus, debug]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]

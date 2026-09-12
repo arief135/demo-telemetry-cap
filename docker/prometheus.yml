@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 5s # fast, so the course doesn't make you wait
+  evaluation_interval: 5s
+scrape_configs:
+  # Prometheus does not talk to your CAP app directly. It scrapes the
+  # Collector, which is holding the metrics your app pushed over OTLP.
+  - job_name: "otel-collector"
+    static_configs:
+      - targets: ["otel-collector:8889"]
+  # The Collector's own internal health metrics. Useful when telemetry
+  # goes missing and you need to know whether it was dropped in transit.
+  - job_name: "otel-collector-internal"
+    static_configs:
+      - targets: ["otel-collector:8888"]

@@ -1,0 +1,5 @@
+ID,title,author,stock,price,createdAt,createdBy,modifiedAt,modifiedBy
+b1000000-0000-0000-0000-000000000001,Wuthering Heights,Emily Brontë,12,11.11
+b1000000-0000-0000-0000-000000000002,Jane Eyre,Charlotte Brontë,11,12.34
+b1000000-0000-0000-0000-000000000003,The Raven,Edgar Allen Poe,333,13.13
+b1000000-0000-0000-0000-000000000004,Eleonora,Edgar Allen Poe,555,14.14
