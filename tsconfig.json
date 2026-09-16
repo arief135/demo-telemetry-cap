@@ -18,5 +18,5 @@
       ]
     }
   },
-  "exclude":["eslint.config.mjs","@cds-models"]
+  "exclude":["eslint.config.mjs","@cds-models","pricing-service"]
 }

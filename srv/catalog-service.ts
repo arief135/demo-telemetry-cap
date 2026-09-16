@@ -4,9 +4,20 @@ import { trace, SpanStatusCode } from '@opentelemetry/api'
 const tracer = trace.getTracer('bookshop.orders')
 
 async function computeTotal(price: number, qty: number): Promise<number> {
-    await new Promise(r => setTimeout(r, 120))   // pretend: pricing service, tax lookup
-    return Number((price * qty).toFixed(2))
+  const res = await fetch('http://localhost:5005/price', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ price, quantity: qty })
+  })
+
+  const { total } = await res.json() as { total: number }
+  return total
 }
+
+// async function computeTotal(price: number, qty: number): Promise<number> {
+//     await new Promise(r => setTimeout(r, 120))   // pretend: pricing service, tax lookup
+//     return Number((price * qty).toFixed(2))
+// }
 
 export default class CatalogService extends cds.ApplicationService {
 
