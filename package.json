@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@cap-js/telemetry": "^2.0.1",
+    "@opentelemetry/exporter-logs-otlp-proto": "^0.222.0",
     "@opentelemetry/exporter-metrics-otlp-proto": "^0.222.0",
     "@opentelemetry/exporter-trace-otlp-proto": "^0.222.0",
     "@opentelemetry/instrumentation-host-metrics": "^0.5.0",
+    "@opentelemetry/sdk-logs": "^0.222.0",
     "@sap/cds": "^10"
   },
   "devDependencies": {
@@ -31,6 +33,19 @@
     "requires": {
       "telemetry": {
         "kind": "to-otlp",
+        "logging": {
+          "exporter": {
+            "module": "@opentelemetry/exporter-logs-otlp-proto",
+            "class": "OTLPLogExporter"
+          }
+        },
+        "sampler": {
+          "ignoreIncomingPaths": [
+            "/health",
+            "/-/",
+            "/favicon.ico"
+          ]
+        },
         "resource": {
           "attributes": {
             "deployment.environment.name": "local"
